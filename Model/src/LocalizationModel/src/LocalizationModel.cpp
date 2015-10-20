@@ -37,12 +37,10 @@ namespace scastroModel
 
 		for (unsigned int i = 0; i < occurrences.size(); i++)
 		{
-			//run seek occurrence for all occurrences. Seek occurrence should seek ALL the occurrences per line(may be more than one)
-			if (Wildcard::eval(occurrences[i]->getOccurrence().c_str(), stringData["line"].c_str()))
-			{
-				//if what we're looking for is not in the line, we put the Model on alert until it finds the data we're looking for
-				this->seekTargetData = true;
-			}
+			std::string line = stringData["line"];
+
+			//find if line contains an occurrence or if an occurrence is in alert mode (the occurrence was found and needs more data to be handled)
+			if (line.find(occurrences[i]->getOccurrence()) != -1 || occurrences[i]->inAlert())
 				occurrences[i]->handle(stringData["line"]);
 		}
 
@@ -50,7 +48,7 @@ namespace scastroModel
 
 	void LocalizationModel::setOccurrences()
 	{
-		std::tr1::shared_ptr<Occurrence<std::string> > htmlTag(new HTMLTagOccurrence("*pear*"));
+		std::tr1::shared_ptr<Occurrence<std::string> > htmlTag(new CakeHTMLTagOccurrence("$this->Html->tag"));
 		occurrences.push_back(htmlTag);
 	}
 }

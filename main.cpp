@@ -6,6 +6,9 @@
  */
 
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <stdexcept>
 
 #include "Model/src/LocalizationModel/src/LocalizationModel.h"
 #include "View/src/LocalizationView/src/LocalizationView.h"
@@ -15,7 +18,7 @@ using namespace scastroModel;
 using namespace scastroView;
 using namespace scastroController;
 
-//filename, wildcards
+//Command Line Arguments: 1)file to read
 int main(int argc, char* argv[])
 {
 	Model* model = new LocalizationModel();

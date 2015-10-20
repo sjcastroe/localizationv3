@@ -9,14 +9,12 @@
 #define MODEL_SRC_LOCALIZATIONMODEL_SRC_LOCALIZATIONMODEL_H_
 
 #include "../../Model.h"
-#include "../../../../Occurrence/src/HTMLTagOccurrence.h"
-#include "../../../../Wildcard/src/Wildcard.h"
+#include "../../../../Occurrence/src/CakeHTMLTagOccurrence.h"
 #include <vector>
 #include <stdexcept>
 #include <tr1/memory>
 
 using namespace scastroOccurrence;
-using scastroWildcard::Wildcard;
 
 namespace scastroModel
 {
@@ -26,7 +24,6 @@ public:
 	void run();
 private:
 	void setOccurrences();
-	bool seekTargetData = false;
 	std::vector<std::tr1::shared_ptr<Occurrence<std::string> > > occurrences;
 };
 

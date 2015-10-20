@@ -52,6 +52,7 @@ void LocalizationController::run(int argc, char* argv[])
 		model->setIntData("linenumber", lineNumber);
 		model->setStringData("line", line);
 
+
 		model->run();
 
 		view->run();
