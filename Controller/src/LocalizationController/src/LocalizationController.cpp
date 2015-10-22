@@ -40,6 +40,14 @@ void LocalizationController::run(int argc, char* argv[])
 		throw fileNotFound;
 	}
 
+	char cCurrentPath[FILENAME_MAX];
+	getcwd(cCurrentPath, sizeof(cCurrentPath));
+	std::string filepath(cCurrentPath);
+	model->setStringData("filepath", filepath + "/" + fileName);
+
+	this->setOccurrences();
+
+	std::ofstream* outputFile = new std::ofstream("tmpFile", std::ofstream::app);
 	int lineNumber = 1;
 	while (true)
 	{
@@ -49,18 +57,87 @@ void LocalizationController::run(int argc, char* argv[])
 		if (readFrom.eof())
 			break;
 
+
 		model->setIntData("linenumber", lineNumber);
 		model->setStringData("line", line);
-
-
 		model->run();
 
-		view->run();
+		for (unsigned int i = 0; i < occurrences.size(); i++)
+		{
+			bool occAlertState = occurrences[i]->getAlertState();
+
+			//find if line contains an occurrence or if an occurrence is in alert mode (the occurrence was found and needs more data to be handled)
+			if (line.find(occurrences[i]->getOccurrence()) != -1 || occAlertState)
+			{
+				model->setStringData("occurrence", occurrences[i]->getOccurrence());
+				model->setIntData("linenumber", lineNumber);
+				model->setStringData("line", line);
+
+				view->display(new scastroView::OccurrenceMessage(model));
+
+				scastroView::Message* unhandledLine = new scastroView::OccurrenceLineMessage(model);
+				unhandledLine->setExternalData("label", "Unhandled Occurrence");
+
+				view->display(unhandledLine);
+
+				//store unmodified line value
+				std::string lineOrig = line;
+
+				//handle the line and pass it back to the model
+				occurrences[i]->handle(line);
+				model->setStringData("line", line);
+
+				scastroView::Message* handledLine = new scastroView::OccurrenceLineMessage(model);
+				handledLine->setExternalData("label", "Handled Occurrence");
+
+				view->display(handledLine);
+				if (occAlertState)
+					view->display(new scastroView::RepromptMessage(model));
+				else
+					view->display(new scastroView::PromptMessage(model));
+
+
+				bool validResponse = false;
+				while (!validResponse)
+				{
+					char response;
+					std::cin >> response;
+					if (response == 'y')
+						validResponse = true;
+					else if (response == 'n')
+					{
+						validResponse = true;
+						occurrences[i]->offAlertState();
+
+						model->setStringData("line", lineOrig);
+					}
+					else
+						std::cout << "Invalid output. Please try again.";
+				}
+				std::cout << std::endl;
+			}
+		}
+
+		view->write(outputFile);
 
 		lineNumber = lineNumber + 1;
 	}
 
 	readFrom.close();
+	delete outputFile;
+}
+
+void LocalizationController::setOccurrences()
+{
+	std::tr1::shared_ptr<Occurrence<std::string> > htmlTag(new CakeHTMLTagOccurrence("$this->Html->tag"));
+	occurrences.push_back(htmlTag);
+
+	if (occurrences.size() == 0)
+	{
+		std::string eMessage = "No occurrences have been set.";
+		std::runtime_error noOccs(eMessage);
+		throw noOccs;
+	}
 }
 
 

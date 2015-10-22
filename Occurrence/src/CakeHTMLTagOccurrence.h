@@ -26,7 +26,8 @@ namespace scastroOccurrence
 	public:
 		CakeHTMLTagOccurrence(std::string occ);
 		void handle(std::string& data);
-		bool inAlert() const;
+		bool getAlertState() const;
+		void offAlertState();
 	private:
 		StrRange getArg(const std::string line, StrRange& argRange);
 		StrRange findArg(const std::string& line, std::string occurrence, int arg);

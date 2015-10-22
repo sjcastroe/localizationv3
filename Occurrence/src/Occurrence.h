@@ -21,7 +21,8 @@ namespace scastroOccurrence
 	public:
 		Occurrence(OccType occ);
 		virtual void handle(OccType& data) = 0;
-		virtual bool inAlert() const = 0;
+		virtual bool getAlertState() const = 0;
+		virtual void offAlertState() = 0;
 		virtual OccType getOccurrence() const;
 		virtual ~Occurrence();
 	protected:

@@ -9,7 +9,7 @@
 #define VIEW_SRC_LOCALIZATIONVIEW_SRC_LOCALIZATIONVIEW_H_
 
 #include "../../View.h"
-#include <fstream>
+#include <iomanip>
 
 namespace scastroView
 {
@@ -17,7 +17,8 @@ namespace scastroView
 class LocalizationView : public View
 {
 public:
-	void run();
+	void display(Message* message);
+	void write(std::ofstream* file);
 };
 
 }

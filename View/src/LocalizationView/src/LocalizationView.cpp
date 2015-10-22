@@ -10,12 +10,14 @@
 namespace scastroView
 {
 
-void LocalizationView::run()
+void LocalizationView::display(Message* message)
 {
-	std::ofstream writeTo("tmpFile", std::ofstream::app);
-	writeTo << model->getStringData("line") << std::endl;
+	message->output();
+}
 
-	std::cout << model->getIntData("linenumber") << "   " << model->getStringData("line") << std::endl;
+void LocalizationView::write(std::ofstream* file)
+{
+	*file << model->getStringData("line") << std::endl;
 }
 
 }

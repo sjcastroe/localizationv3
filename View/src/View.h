@@ -10,7 +10,9 @@
 
 #include <map>
 #include <string>
+#include <fstream>
 #include "../../Model/src/Model.h"
+#include "../../Message/src/Message.h"
 
 namespace scastroView
 {
@@ -18,7 +20,8 @@ namespace scastroView
 class View
 {
 public:
-	virtual void run() = 0;
+	virtual void display(Message* message) = 0;
+	virtual void write(std::ofstream* file) = 0;
 	virtual void setModel(scastroModel::Model* m);
 	virtual ~View() {}
 protected:
