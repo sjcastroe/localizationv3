@@ -69,52 +69,78 @@ void LocalizationController::run(int argc, char* argv[])
 			//find if line contains an occurrence or if an occurrence is in alert mode (the occurrence was found and needs more data to be handled)
 			if (line.find(occurrences[i]->getOccurrence()) != -1 || occAlertState)
 			{
-				model->setStringData("occurrence", occurrences[i]->getOccurrence());
-				model->setIntData("linenumber", lineNumber);
-				model->setStringData("line", line);
-
-				view->display(new scastroView::OccurrenceMessage(model));
-
-				scastroView::Message* unhandledLine = new scastroView::OccurrenceLineMessage(model);
-				unhandledLine->setExternalData("label", "Unhandled Occurrence");
-
-				view->display(unhandledLine);
+				bool shouldBeHandled = true;
 
 				//store unmodified line value
 				std::string lineOrig = line;
 
-				//handle the line and pass it back to the model
-				occurrences[i]->handle(line);
-				model->setStringData("line", line);
+				model->setStringData("occurrence", occurrences[i]->getOccurrence());
+				model->setIntData("linenumber", lineNumber);
+				model->setStringData("line", lineOrig);
 
-				scastroView::Message* handledLine = new scastroView::OccurrenceLineMessage(model);
-				handledLine->setExternalData("label", "Handled Occurrence");
+				scastroView::Message* unhandledLine = new scastroView::OccurrenceLineMessage(model);
+				unhandledLine->setExternalData("label", "Unhandled Occurrence");
 
-				view->display(handledLine);
-				if (occAlertState)
-					view->display(new scastroView::RepromptMessage(model));
-				else
+
+				try
+				{
+					occurrences[i]->handle(line);
+				}
+				catch (std::out_of_range& error)
+				{
+					occurrences[i]->offAlertState();
+					model->setStringData("line", lineOrig);
+
+					std::cout << "ERROR: Could not handle occurrence. " << std::endl;
+					view->display(new scastroView::OccurrenceMessage(model));
+					view->display(unhandledLine);
+					std::cout << "Press any key and then ENTER to continue." << std::endl;
+
+					char anyKey;
+					std::cin >> anyKey;
+
+					std::cout << std::endl;
+					shouldBeHandled = false;
+				}
+
+
+				if (line == lineOrig)
+					shouldBeHandled = false;
+
+				if (shouldBeHandled)
+				{
+					view->display(new scastroView::OccurrenceMessage(model));
+
+					view->display(unhandledLine);
+
+					model->setStringData("line", line);
+
+					scastroView::Message* handledLine = new scastroView::OccurrenceLineMessage(model);
+					handledLine->setExternalData("label", "Handled Occurrence");
+
+					view->display(handledLine);
 					view->display(new scastroView::PromptMessage(model));
 
 
-				bool validResponse = false;
-				while (!validResponse)
-				{
-					char response;
-					std::cin >> response;
-					if (response == 'y')
-						validResponse = true;
-					else if (response == 'n')
+					bool validResponse = false;
+					while (!validResponse)
 					{
-						validResponse = true;
-						occurrences[i]->offAlertState();
+						char response;
+						std::cin >> response;
+						if (response == 'y')
+							validResponse = true;
+						else if (response == 'n')
+						{
+							validResponse = true;
+							occurrences[i]->offAlertState();
 
-						model->setStringData("line", lineOrig);
+							model->setStringData("line", lineOrig);
+						}
+						else
+							std::cout << "Invalid output. Please try again.";
 					}
-					else
-						std::cout << "Invalid output. Please try again.";
+					std::cout << std::endl;
 				}
-				std::cout << std::endl;
 			}
 		}
 

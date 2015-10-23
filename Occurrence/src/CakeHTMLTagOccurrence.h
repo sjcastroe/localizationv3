@@ -11,6 +11,7 @@
 #include "Occurrence.h"
 #include <string>
 #include <stdexcept>
+#include "../../Wildcard/src/Wildcard.h"
 
 namespace scastroOccurrence
 {

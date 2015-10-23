@@ -36,6 +36,9 @@ namespace scastroOccurrence
 			{
 				requestNextLine += data;
 			}
+			else if (argRange.beg == -2)
+			{
+			}
 			else
 			{
 				std::string firstArg = data.substr(argRange.beg, argRange.end - argRange.beg);
@@ -46,11 +49,15 @@ namespace scastroOccurrence
 					std::runtime_error argNotFound(eMessage);
 					throw argNotFound;
 				}
-				std::string dataBeg = data.substr(0, argRange.beg);
-				std::string dataMid = data.substr(argRange.beg, argRange.end - argRange.beg);
-				std::string dataEnd = data.substr(argRange.end);
 
-				data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
+				std::string dataMid = data.substr(argRange.beg, argRange.end - argRange.beg);
+				if (!scastroWildcard::Wildcard::eval("*null*", dataMid.c_str()))
+				{
+					std::string dataBeg = data.substr(0, argRange.beg);
+					std::string dataEnd = data.substr(argRange.end);
+
+					data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
+				}
 			}
 		}
 		else
@@ -62,6 +69,9 @@ namespace scastroOccurrence
 			if (argRange.beg == -1)
 			{
 				requestNextLine += data;
+			}
+			else if (argRange.beg == -2)
+			{
 			}
 			else
 			{
@@ -78,11 +88,14 @@ namespace scastroOccurrence
 				argRange.beg -= newLineOffset;
 				argRange.end -= newLineOffset;
 
-				std::string dataBeg = data.substr(0, argRange.beg);
 				std::string dataMid = data.substr(argRange.beg, argRange.end - argRange.beg);
-				std::string dataEnd = data.substr(argRange.end);
+				if (!scastroWildcard::Wildcard::eval("*null*", dataMid.c_str()))
+				{
+					std::string dataBeg = data.substr(0, argRange.beg);
+					std::string dataEnd = data.substr(argRange.end);
 
-				data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
+					data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
+				}
 
 				requestNextLine = "";
 			}
@@ -107,6 +120,7 @@ namespace scastroOccurrence
 		}
 
 		std::string funcName = line.substr(0, funcNameEnd);
+		//std::cout << funcName << std::endl;
 
 		StrRange nextArgRange = findArg(line, funcName, 1);
 		if (nextArgRange.beg != -1)
@@ -115,6 +129,7 @@ namespace scastroOccurrence
 			argRange.beg += nextArgRange.beg;
 
 			std::string nextArg = line.substr(nextArgRange.beg, nextArgRange.end - nextArgRange.beg);
+			//std::cout << nextArg << std::endl;
 
 			return getArg(nextArg, argRange);
 		}
@@ -123,6 +138,8 @@ namespace scastroOccurrence
 	}
 
 	//We have a line -> find function occurrence, find its nth argument, return beg and end position
+	//return -1 -> if we haven't found the target data BUT the function HAS NOT exited
+	//return -2 -> if we haven't found the target data AND the function HAS exited
 	StrRange CakeHTMLTagOccurrence::findArg(const std::string& line, std::string occurrence, int arg)
 	{
 		if (!(arg >= 1))
@@ -164,9 +181,9 @@ namespace scastroOccurrence
 				break;
 			if (bracketLevel < 0)
 			{
-				std::string eMessage = "findArg Error: Invalid argument number. The function occurrence accepts less arguments than requested.";
-				std::runtime_error badArgNo(eMessage);
-				throw badArgNo;
+				argument.beg = -2;
+				argument.end = -2;
+				return argument;
 			}
 		}
 
@@ -182,9 +199,14 @@ namespace scastroOccurrence
 				//check if we exited the function
 				if (bracketLevel < 0 && i < arg - 1)
 				{
+					argument.beg = -2;
+					argument.end = -2;
+					return argument;
+					/*
 					std::string eMessage = "findArg Error: Invalid argument number. The function occurrence accepts less arguments than requested.";
 					std::runtime_error badArgNo(eMessage);
 					throw badArgNo;
+					*/
 				}
 
 				if ((args[j] == ',' && bracketLevel == 0 && j != 0) || (bracketLevel < 0 && i == arg - 1))
