@@ -13,19 +13,6 @@ namespace scastroOccurrence
 
 	CakeHTMLTagOccurrence::CakeHTMLTagOccurrence(std::string occ) : Occurrence<std::string>::Occurrence(occ) {}
 
-	bool CakeHTMLTagOccurrence::getAlertState() const
-	{
-		if (requestNextLine == "")
-			return false;
-		else
-			return true;
-	}
-
-	void CakeHTMLTagOccurrence::offAlertState()
-	{
-		requestNextLine = "";
-	}
-
 	void CakeHTMLTagOccurrence::handle(std::string& data)
 	{
 		//If requestNextLine is not empty then an occurrence has been identified but the object is waiting for more data to handle the occurrence

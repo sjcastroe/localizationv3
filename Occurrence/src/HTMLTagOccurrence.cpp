@@ -18,12 +18,6 @@ namespace scastroOccurrence
 		data = "hehehehehe";
 	}
 
-	void HTMLTagOccurrence::seek(const std::string& data)
-	{
-		Wildcard::eval(this->occurrence.c_str(), data.c_str());
-
-	}
-
 
 }
 

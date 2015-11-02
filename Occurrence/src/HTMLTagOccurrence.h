@@ -19,7 +19,6 @@ namespace scastroOccurrence
 	{
 	public:
 		HTMLTagOccurrence(std::string occ);
-		void seek(const std::string& data);
 		void handle(std::string& data);
 	};
 

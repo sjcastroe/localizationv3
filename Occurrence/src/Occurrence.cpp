@@ -15,6 +15,21 @@ namespace scastroOccurrence
 	Occurrence<OccType>::Occurrence(OccType occ) : occurrence(occ) {}
 
 	template<typename OccType>
+	bool Occurrence<OccType>::getAlertState() const
+	{
+		if (requestNextLine == "")
+			return false;
+		else
+			return true;
+	}
+
+	template<typename OccType>
+	void Occurrence<OccType>::offAlertState()
+	{
+		requestNextLine = "";
+	}
+
+	template<typename OccType>
 	OccType Occurrence<OccType>::getOccurrence() const
 	{
 		return occurrence;
