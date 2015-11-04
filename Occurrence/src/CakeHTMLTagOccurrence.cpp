@@ -11,67 +11,32 @@
 namespace scastroOccurrence
 {
 
-	CakeHTMLTagOccurrence::CakeHTMLTagOccurrence(std::string occ) : Occurrence<std::string>::Occurrence(occ) {}
+	CakeHTMLTagOccurrence::CakeHTMLTagOccurrence()
+	{
+		occurrenceType = "$this->Html->tag";
+	}
 
 	void CakeHTMLTagOccurrence::handle(std::string& data)
 	{
-		//If requestNextLine is not empty then an occurrence has been identified but the object is waiting for more data to handle the occurrence
-		if (requestNextLine == "")
-		{
-			StrRange argRange = findArg(data, occurrence, 2);
-			if (argRange.beg == -1)
-			{
-				requestNextLine += data;
-			}
-			else if (argRange.beg == -2)
-			{
-			}
-			else
-			{
-				std::string firstArg = data.substr(argRange.beg, argRange.end - argRange.beg);
-				argRange = getArg(firstArg, argRange);
-				if (argRange.beg == -1)
-				{
-					std::string eMessage = "getArg Error: Argument not found.";
-					std::runtime_error argNotFound(eMessage);
-					throw argNotFound;
-				}
+		//std::cout << "LINE: " << line << std::endl;
+		int newLineOffset = line.length() - data.length();
 
-				std::string dataMid = data.substr(argRange.beg, argRange.end - argRange.beg);
-				if (!scastroWildcard::Wildcard::eval("*null*", dataMid.c_str()))
-				{
-					std::string dataBeg = data.substr(0, argRange.beg);
-					std::string dataEnd = data.substr(argRange.end);
+		StrRange argRange = findArg(line, occurrenceType, 2);
 
-					data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
-				}
-			}
-		}
+		if (argRange.beg == -2)
+			inAlert = false;
 		else
 		{
-			int newLineOffset = requestNextLine.length();
-			requestNextLine += data;
+			//std::cout << "ARGRANGE: " << argRange.beg << "    " << argRange.end << std::endl;
 
-			StrRange argRange = findArg(requestNextLine, occurrence, 2);
-			if (argRange.beg == -1)
-			{
-				requestNextLine += data;
-			}
-			else if (argRange.beg == -2)
-			{
-			}
+			std::string firstArg = line.substr(argRange.beg, argRange.end - argRange.beg);
+
+			argRange = getArg(firstArg, argRange);
+
+			if (argRange.end == -1)
+				inAlert = true;
 			else
 			{
-				std::string firstArg = requestNextLine.substr(argRange.beg, argRange.end - argRange.beg);
-				argRange = getArg(firstArg, argRange);
-
-				if (argRange.beg == -1)
-				{
-					std::string eMessage = "getArg Error: Argument not found.";
-					std::runtime_error argNotFound(eMessage);
-					throw argNotFound;
-				}
-
 				argRange.beg -= newLineOffset;
 				argRange.end -= newLineOffset;
 
@@ -84,9 +49,26 @@ namespace scastroOccurrence
 					data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
 				}
 
-				requestNextLine = "";
+				inAlert = false;
 			}
 		}
+
+	}
+
+	bool CakeHTMLTagOccurrence::isFound()
+	{
+		if (line.find(occurrenceType) != -1)
+			return true;
+		else
+			return false;
+	}
+
+	void CakeHTMLTagOccurrence::feed(std::string li)
+	{
+		if (inAlert)
+			line += li;
+		else
+			line = li;
 	}
 
 	//line is function to traverse as a string, argRange is the starting argument range (if line was an argument of another function)
@@ -110,13 +92,13 @@ namespace scastroOccurrence
 		//std::cout << funcName << std::endl;
 
 		StrRange nextArgRange = findArg(line, funcName, 1);
-		if (nextArgRange.beg != -1)
+		if (nextArgRange.end != -1)
 		{
 			argRange.end = argRange.beg + nextArgRange.end;
 			argRange.beg += nextArgRange.beg;
 
 			std::string nextArg = line.substr(nextArgRange.beg, nextArgRange.end - nextArgRange.beg);
-			//std::cout << nextArg << std::endl;
+			//std::cout << "inside getArg: " << nextArg << std::endl;
 
 			return getArg(nextArg, argRange);
 		}
@@ -209,7 +191,7 @@ namespace scastroOccurrence
 				//if we've read the whole line and haven't found what we wanted, but the function hasn't exited -> we have to read next line
 				if (j == args.length() - 1)
 				{
-					argument.beg = -1;
+					argument.beg = argsBeg + beg;
 					argument.end = -1;
 					return argument;
 				}

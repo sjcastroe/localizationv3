@@ -35,7 +35,7 @@ public:
 private:
 	std::string fileName;
 	void setOccurrences();
-	std::vector<std::tr1::shared_ptr<Occurrence<std::string> > > occurrences;
+	std::vector<std::tr1::shared_ptr<Occurrence> > occurrences;
 };
 
 }

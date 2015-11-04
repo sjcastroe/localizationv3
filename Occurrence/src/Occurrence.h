@@ -21,19 +21,17 @@ namespace scastroOccurrence
 		int end;
 	};
 
-	template<typename OccType>
 	class Occurrence
 	{
 	public:
-		Occurrence(OccType occ);
-		virtual void handle(OccType& data) = 0;
-		virtual bool getAlertState() const;
-		virtual void offAlertState();
-		virtual OccType getOccurrence() const;
+		virtual void handle(std::string& data) = 0;
+		virtual bool isFound() = 0;
+		virtual void feed(std::string li) = 0;
+		virtual std::string getOccurrenceType() const;
 		virtual ~Occurrence();
 	protected:
-		const OccType occurrence;
-		std::string requestNextLine = "";
+		std::string occurrenceType;
+		std::string line;
 	};
 
 }

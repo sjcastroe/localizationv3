@@ -11,35 +11,13 @@
 namespace scastroOccurrence
 {
 
-	template<typename OccType>
-	Occurrence<OccType>::Occurrence(OccType occ) : occurrence(occ) {}
-
-	template<typename OccType>
-	bool Occurrence<OccType>::getAlertState() const
+	std::string Occurrence::getOccurrenceType() const
 	{
-		if (requestNextLine == "")
-			return false;
-		else
-			return true;
+		return occurrenceType;
 	}
 
-	template<typename OccType>
-	void Occurrence<OccType>::offAlertState()
-	{
-		requestNextLine = "";
-	}
-
-	template<typename OccType>
-	OccType Occurrence<OccType>::getOccurrence() const
-	{
-		return occurrence;
-	}
-
-	template<typename OccType>
-	Occurrence<OccType>::~Occurrence() {}
+	Occurrence::~Occurrence() {}
 
 }
-
-template class scastroOccurrence::Occurrence<std::string>;
 
 

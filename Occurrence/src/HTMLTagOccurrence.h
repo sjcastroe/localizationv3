@@ -11,15 +11,22 @@
 
 #include "Occurrence.h"
 #include <string>
+#include <stdexcept>
 
 namespace scastroOccurrence
 {
 
-	class HTMLTagOccurrence : public Occurrence<std::string>
+	class HTMLTagOccurrence : public Occurrence
 	{
 	public:
-		HTMLTagOccurrence(std::string occ);
+		HTMLTagOccurrence();
 		void handle(std::string& data);
+		bool isFound();
+		void feed(std::string li);
+	private:
+		int tagLevel = 0;
+		int deltaTagLevel = 0;
+		StrRange range;
 	};
 
 }

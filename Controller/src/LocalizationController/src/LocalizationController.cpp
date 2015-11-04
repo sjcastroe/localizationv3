@@ -64,17 +64,18 @@ void LocalizationController::run(int argc, char* argv[])
 
 		for (unsigned int i = 0; i < occurrences.size(); i++)
 		{
-			bool occAlertState = occurrences[i]->getAlertState();
+			//bool occAlertState = occurrences[i]->getAlertState();
+			occurrences[i]->feed(line);
 
 			//find if line contains an occurrence or if an occurrence is in alert mode (the occurrence was found and needs more data to be handled)
-			if (line.find(occurrences[i]->getOccurrence()) != -1 || occAlertState)
+			if (occurrences[i]->isFound())
 			{
 				bool shouldBeHandled = true;
 
 				//store unmodified line value
 				std::string lineOrig = line;
 
-				model->setStringData("occurrence", occurrences[i]->getOccurrence());
+				model->setStringData("occurrence", occurrences[i]->getOccurrenceType());
 				model->setIntData("linenumber", lineNumber);
 				model->setStringData("line", lineOrig);
 
@@ -88,7 +89,7 @@ void LocalizationController::run(int argc, char* argv[])
 				}
 				catch (std::out_of_range& error)
 				{
-					occurrences[i]->offAlertState();
+					std::cout << error.what();
 					model->setStringData("line", lineOrig);
 
 					std::cout << "ERROR: Could not handle occurrence. " << std::endl;
@@ -132,7 +133,6 @@ void LocalizationController::run(int argc, char* argv[])
 						else if (response == 'n')
 						{
 							validResponse = true;
-							occurrences[i]->offAlertState();
 
 							model->setStringData("line", lineOrig);
 						}
@@ -155,7 +155,7 @@ void LocalizationController::run(int argc, char* argv[])
 
 void LocalizationController::setOccurrences()
 {
-	std::tr1::shared_ptr<Occurrence<std::string> > htmlTag(new CakeHTMLTagOccurrence("$this->Html->tag"));
+	std::tr1::shared_ptr<Occurrence> htmlTag(new CakeHTMLTagOccurrence());
 	occurrences.push_back(htmlTag);
 
 	if (occurrences.size() == 0)

@@ -15,16 +15,18 @@
 namespace scastroOccurrence
 {
 
-	class CakeHTMLTagOccurrence : public Occurrence<std::string>
+	class CakeHTMLTagOccurrence : public Occurrence
 	{
 	public:
-		CakeHTMLTagOccurrence(std::string occ);
+		CakeHTMLTagOccurrence();
 		void handle(std::string& data);
+		bool isFound();
+		void feed(std::string li);
 	private:
 		StrRange getArg(const std::string line, StrRange& argRange);
 		StrRange findArg(const std::string& line, std::string occurrence, int arg);
+		bool inAlert = false;
 	};
-
 
 
 }
