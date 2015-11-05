@@ -5,7 +5,6 @@
  *      Author: root
  */
 
-#include <string>
 #include "HTMLTagOccurrence.h"
 
 namespace scastroOccurrence
@@ -20,17 +19,43 @@ namespace scastroOccurrence
 
 	void HTMLTagOccurrence::handle(std::string& data)
 	{
-		std::string dataBeg = data.substr(0, range.beg);
-		std::string dataMid = data.substr(range.beg, range.end - range.beg);
-		std::string dataEnd = data.substr(range.end);
+		int rangeLength = range.end - range.beg;
+		if (rangeLength < 0)
+		{
+			std::string eMessage = "The target range is negative.";
+			std::runtime_error negTarRng(eMessage);
+			throw negTarRng;
+		}
 
-		data = dataBeg + "<?php __(" + dataMid + ")?>" + dataEnd;
+		std::string dataMid = data.substr(range.beg, rangeLength);
+
+		if (dataMid.find_first_not_of(' ') != std::string::npos)
+		{
+			std::string dataBeg = data.substr(0, range.beg);
+			std::string dataEnd = data.substr(range.end);
+
+			if (inPHPTag)
+				data = dataBeg + "__('" + dataMid + "', true)" + dataEnd;
+			else
+				data = dataBeg + "<?php __('" + dataMid + "')?>" + dataEnd;
+		}
 	}
 
 	bool HTMLTagOccurrence::isFound()
 	{
 		for (int i = 0; i < line.size(); i++)
 		{
+			if (inPHPTag && (line[i] == '<' && line[i + 1] == '?'))
+			{
+				std::string eMessage = "HTMLTagOccurrence::isFound(): PHP tag within PHP tag.";
+				std::runtime_error phpInPhp(eMessage);
+				throw phpInPhp;
+			}
+			if (line[i] == '<' && line[i + 1] == '?')
+				inPHPTag = true;
+			if (line[i] == '?' && line[i + 1] == '>')
+				inPHPTag = false;
+
 			if (deltaTagLevel == 1 && line[i] == '>')
 			{
 				range.beg = i + 1;

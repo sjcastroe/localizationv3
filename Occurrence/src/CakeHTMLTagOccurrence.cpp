@@ -13,7 +13,7 @@ namespace scastroOccurrence
 
 	CakeHTMLTagOccurrence::CakeHTMLTagOccurrence()
 	{
-		occurrenceType = "$this->Html->tag";
+		occurrenceType = "Cake HTML Tag";
 	}
 
 	void CakeHTMLTagOccurrence::handle(std::string& data)
@@ -57,7 +57,7 @@ namespace scastroOccurrence
 
 	bool CakeHTMLTagOccurrence::isFound()
 	{
-		if (line.find(occurrenceType) != -1)
+		if (line.find("$this->Html->tag") != -1)
 			return true;
 		else
 			return false;

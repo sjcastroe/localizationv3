@@ -89,10 +89,9 @@ void LocalizationController::run(int argc, char* argv[])
 				}
 				catch (std::out_of_range& error)
 				{
-					std::cout << error.what();
 					model->setStringData("line", lineOrig);
 
-					std::cout << "ERROR: Could not handle occurrence. " << std::endl;
+					std::cout << "ERROR: Could not handle occurrence: " << error.what() << std::endl;
 					view->display(new scastroView::OccurrenceMessage(model));
 					view->display(unhandledLine);
 					std::cout << "Press any key and then ENTER to continue." << std::endl;
@@ -155,7 +154,10 @@ void LocalizationController::run(int argc, char* argv[])
 
 void LocalizationController::setOccurrences()
 {
-	std::tr1::shared_ptr<Occurrence> htmlTag(new CakeHTMLTagOccurrence());
+	std::tr1::shared_ptr<Occurrence> cakeHtmlTag(new CakeHTMLTagOccurrence());
+	occurrences.push_back(cakeHtmlTag);
+
+	std::tr1::shared_ptr<Occurrence> htmlTag(new HTMLTagOccurrence());
 	occurrences.push_back(htmlTag);
 
 	if (occurrences.size() == 0)

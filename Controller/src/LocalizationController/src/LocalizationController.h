@@ -17,6 +17,7 @@
 #include "../../Controller.h"
 #include "../../../../Model/src/LocalizationModel/src/LocalizationModel.h"
 #include "../../../../Occurrence/src/CakeHTMLTagOccurrence.h"
+#include "../../../../Occurrence/src/HTMLTagOccurrence.h"
 
 #include "../../../../Message/src/OccurrenceMessage.h"
 #include "../../../../Message/src/OccurrenceLineMessage.h"

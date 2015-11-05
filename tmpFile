@@ -1,0 +1,362 @@
+<div id="export-history" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-filters" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-notes" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-dispositions" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-trace" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+
+<div class="action-container-row">
+	<div class="action-container-left">
+		<?php
+	   // echo $this->Form->hidden('');
+			echo '&nbsp;';
+			echo $this->Html->link(
+			$this->I18n->i18n('Filters'),
+			array('action' => 'filters'),
+			array(
+				'class' => 'btn',
+				'onclick' => 'loadModal("#history-filters", $(this).attr("href"));',
+				'data-target' => '#history-filters',
+				'data-toggle' => 'modal',
+				'data-backdrop' => 'static',
+			)
+		);
+	  ?>
+		<?php 
+		/*setup the active filters panel */
+		if (isset($filters['start_date']) && isset($filters['end_date'])) {
+			// $startDate = date("F jS, Y g:i a",strtotime($filters['start_date']));
+			// $endDate = date("F jS, Y g:i a",strtotime($filters['end_date']));
+
+			
+			if ($this->Uiconfig->isUiConfig("PORTAL_CALL_HISTORY_SHOW_FILTER_TIME","no")) {
+				$startDate = date( 'm/d/Y H:i', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y H:i', strtotime($filters['end_date']));
+			}
+			else {
+				$startDate = date( 'm/d/Y ', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y ', strtotime($filters['end_date']));
+			}
+			
+
+			echo "<a id='filter-date' onclick='loadModal(\"#history-filters\", $(this).attr(\"href\"));' href='/portal/callhistory/filters' data-target='#history-filters' data-toggle='modal' data-backdrop='static' class='badge badge-info set-filters'>".$startDate." &mdash; ".$endDate."</a>";
+
+		}
+		
+		if (isset($filters['type'])  )
+			
+			echo "<span id=\"filter-type\" class=\"badge badge-info  set-filters clear-filter\">" .$filters['type'] . " Calls" .
+			$this->Html->link(
+				'&times;',
+				array('action' => 'remove_filter','type'),
+				array('class' => 'clear-filter', 'escape' => false)
+			) . 
+<div id="export-history" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-filters" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-notes" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-dispositions" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-trace" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+
+<div class="action-container-row">
+	<div class="action-container-left">
+		<?php
+	   // echo $this->Form->hidden('');
+			echo '&nbsp;';
+			echo $this->Html->link(
+			$this->I18n->i18n('Filters'),
+			array('action' => 'filters'),
+			array(
+				'class' => 'btn',
+				'onclick' => 'loadModal("#history-filters", $(this).attr("href"));',
+				'data-target' => '#history-filters',
+				'data-toggle' => 'modal',
+				'data-backdrop' => 'static',
+			)
+		);
+	  ?>
+		<?php 
+		/*setup the active filters panel */
+		if (isset($filters['start_date']) && isset($filters['end_date'])) {
+			// $startDate = date("F jS, Y g:i a",strtotime($filters['start_date']));
+			// $endDate = date("F jS, Y g:i a",strtotime($filters['end_date']));
+
+			
+			if ($this->Uiconfig->isUiConfig("PORTAL_CALL_HISTORY_SHOW_FILTER_TIME","no")) {
+				$startDate = date( 'm/d/Y H:i', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y H:i', strtotime($filters['end_date']));
+			}
+			else {
+				$startDate = date( 'm/d/Y ', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y ', strtotime($filters['end_date']));
+			}
+			
+
+			echo "<a id='filter-date' onclick='loadModal(\"#history-filters\", $(this).attr(\"href\"));' href='/portal/callhistory/filters' data-target='#history-filters' data-toggle='modal' data-backdrop='static' class='badge badge-info set-filters'>".$startDate." &mdash; ".$endDate."</a>";
+
+		}
+		
+		if (isset($filters['type'])  )
+			
+			echo "<span id=\"filter-type\" class=\"badge badge-info  set-filters clear-filter\">" .$filters['type'] . " Calls" .
+			$this->Html->link(
+				'&times;',
+				array('action' => 'remove_filter','type'),
+				array('class' => 'clear-filter', 'escape' => false)
+			) . 
+			" </span>";
+		if (isset($filters['user']) )
+		{
+			if($this->Session->check('queueAndAgentList') &&  $this->Session->read('layout_type') == "navigation_omp" && $this->Session->read('sub_scope') == "Call Center Supervisor")
+			{
+				$details = $this->Session->read('queueAndAgentList');
+				if ($this->Session->read('sub_user') == $filters['user'])
+<div id="export-history" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-filters" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-notes" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-dispositions" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-trace" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+
+<div class="action-container-row">
+	<div class="action-container-left">
+		<?php
+	   // echo $this->Form->hidden('');
+			echo '&nbsp;';
+			echo $this->Html->link(
+			$this->I18n->i18n('Filters'),
+			array('action' => 'filters'),
+			array(
+				'class' => 'btn',
+				'onclick' => 'loadModal("#history-filters", $(this).attr("href"));',
+				'data-target' => '#history-filters',
+				'data-toggle' => 'modal',
+				'data-backdrop' => 'static',
+			)
+		);
+	  ?>
+		<?php 
+		/*setup the active filters panel */
+		if (isset($filters['start_date']) && isset($filters['end_date'])) {
+			// $startDate = date("F jS, Y g:i a",strtotime($filters['start_date']));
+			// $endDate = date("F jS, Y g:i a",strtotime($filters['end_date']));
+
+			
+			if ($this->Uiconfig->isUiConfig("PORTAL_CALL_HISTORY_SHOW_FILTER_TIME","no")) {
+				$startDate = date( 'm/d/Y H:i', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y H:i', strtotime($filters['end_date']));
+			}
+			else {
+				$startDate = date( 'm/d/Y ', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y ', strtotime($filters['end_date']));
+			}
+			
+
+<div id="export-history" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-filters" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-notes" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-dispositions" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+<div id="history-trace" class="modal hide fade">
+	<span class="loading-lg"></span>
+</div>
+
+<div class="action-container-row">
+	<div class="action-container-left">
+		<?php
+	   // echo $this->Form->hidden('');
+			echo '&nbsp;';
+			echo $this->Html->link(
+			$this->I18n->i18n('Filters'),
+			array('action' => 'filters'),
+			array(
+				'class' => 'btn',
+				'onclick' => 'loadModal("#history-filters", $(this).attr("href"));',
+				'data-target' => '#history-filters',
+				'data-toggle' => 'modal',
+				'data-backdrop' => 'static',
+			)
+		);
+	  ?>
+		<?php 
+		/*setup the active filters panel */
+		if (isset($filters['start_date']) && isset($filters['end_date'])) {
+			// $startDate = date("F jS, Y g:i a",strtotime($filters['start_date']));
+			// $endDate = date("F jS, Y g:i a",strtotime($filters['end_date']));
+
+			
+			if ($this->Uiconfig->isUiConfig("PORTAL_CALL_HISTORY_SHOW_FILTER_TIME","no")) {
+				$startDate = date( 'm/d/Y H:i', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y H:i', strtotime($filters['end_date']));
+			}
+			else {
+				$startDate = date( 'm/d/Y ', strtotime($filters['start_date']));
+				$endDate = date( 'm/d/Y ', strtotime($filters['end_date']));
+			}
+			
+
+			echo "<a id='filter-date' onclick='loadModal(\"#history-filters\", $(this).attr(\"href\"));' href='/portal/callhistory/filters' data-target='#history-filters' data-toggle='modal' data-backdrop='static' class='badge badge-info set-filters'>".$startDate." &mdash; ".$endDate."</a>";
+
+		}
+		
+		if (isset($filters['type'])  )
+			
+			echo "<span id=\"filter-type\" class=\"badge badge-info  set-filters clear-filter\">" .$filters['type'] . " Calls" .
+			$this->Html->link(
+				'&times;',
+				array('action' => 'remove_filter','type'),
+				array('class' => 'clear-filter', 'escape' => false)
+			) . 
+			" </span>";
+		if (isset($filters['user']) )
+		{
+			if($this->Session->check('queueAndAgentList') &&  $this->Session->read('layout_type') == "navigation_omp" && $this->Session->read('sub_scope') == "Call Center Supervisor")
+			{
+				$details = $this->Session->read('queueAndAgentList');
+				if ($this->Session->read('sub_user') == $filters['user'])
+					echo "<span id=\"filter-user\" class=\"badge badge-info  set-filters clear-filter\"> My Calls &nbsp; </span> ";
+				else
+					echo "<span id=\"filter-user\" class=\"badge badge-info  set-filters clear-filter\">". $details[$filters['user']] ."&nbsp; </span> ";
+			}
+			else if ($this->Session->read('layout_type')!='navigation_user') 
+				echo "<span id=\"filter-user\" class=\"badge badge-info  set-filters clear-filter\">".$this->I18n->i18n("User").": ".$filters['user'] .
+				$this->Html->link(
+					'&times;',
+					array('action' => 'remove_filter','user'),
+					array('class' => 'clear-filter', 'escape' => false)
+				) . 
+				" </span>";
+		}
+		if (isset($filters['domain']) )
+		{
+			if ($this->Session->read('layout_type')=='navigation_reseller')
+				echo "<span id=\"filter-user\" class=\"badge badge-info  set-filters clear-filter\">".$this->I18n->i18n("Domain").": ".$filters['domain'] .
+				$this->Html->link(
+						'&times;',
+						array('action' => 'remove_filter','domain'),
+						array('class' => 'clear-filter', 'escape' => false)
+				) .
+				" </span>";
+		}
+		if (isset($filters['caller']) )
+			echo "<span id=\"filter-user\" class=\"badge badge-info  set-filters clear-filter\">".$this->I18n->i18n("Caller").": ".$filters['caller'] .
+				$this->Html->link(
+						'&times;',
+						array('action' => 'remove_filter','caller'),
+						array('class' => 'clear-filter', 'escape' => false)
+				) .
+				" </span>";
+		if (isset($filters['dialled']) )
+			echo "<span id=\"filter-dialed\" class=\"badge badge-info  set-filters clear-filter\">".$this->I18n->i18n("Dialed").": ".$filters['dialled'] .
+			$this->Html->link(
+				'&times;',
+				array('action' => 'remove_filter','dialled'),
+				array('class' => 'clear-filter', 'escape' => false)
+			) . 
+			" </span>";
+		 ?>
+		
+		
+	</div>
+	<div class="action-container-right">
+	<?php
+
+	// 	echo $this->Html->link(
+	// 		'Disposition Settings',
+	// 		array('action' => 'dispositions'),
+	// 		array(
+	// 			'class' => 'btn',
+	//			'onclick' => 'loadModal("#history-dispositions", $(this).attr("href"))',
+	// 			'data-target' => '#history-dispositions',
+	// 			'data-toggle' => 'modal',
+	// 			'data-backdrop' => 'static',
+	// 		)
+	// 	);
+	?>
+	<?php
+		if ($this->Uiconfig->isUiConfig("PORTAL_CALLHISTORY_EXPORT","yes"))
+		{
+			echo '&nbsp;';
+			// echo $this->Html->link(
+			// 	$this->I18n->i18n("Export"),
+			// 	array('action' => 'export.csv'),
+			// 	array(
+			// 		'class' => 'btn helpsy',
+			// 		'title' => $this->I18n->i18n("Download Call Data"),
+			// 		'data-loading-text' => 'Exporting...'
+			// 		)
+			// );
+			?>
+			<button class="btn download-file helpsy" title="<?php echo $this->I18n->i18n("Download Call Data");?>" data-download-path="/portal/callhistory/export.csv" data-download-disable="true"><?php echo __('Export');?></button>
+			<?php
+		}
+		if ($this->Uiconfig->isUiConfig("PORTAL_CALLHISTORY_EXPORT_BILLABLE","no") && isset($filters['domain']))
+		{
+			$expires= gmdate("Y-m-d H:i:s", time() + 3600);
+			$salt= "3rdPartBillable";
+			
+			$prehash = $salt.$filters['domain'].$filters['start_date'].$filters['end_date'].$expires;
+			$params = "domain=".$filters['domain']."&start_date=".urlencode($filters['start_date'])."&end_date=".
+			urlencode($filters['end_date'])."&expires=".urlencode($expires)."&hash=".md5($prehash);
+			
+			if(isset($thirdParty))
+				$params.=$thirdParty;
+					
+			echo '&nbsp;';
+			echo $this->Html->link(
+					$this->Uiconfig->getUiConfig("PORTAL_CALLHISTORY_EXPORT_BILLABLE_TEXT", "Billable Calls"),
+					$this->Uiconfig->getUiConfig("PORTAL_CALLHISTORY_EXPORT_BILLABLE_URL","billable.php")."?".$params,
+					array('class' => 'btn helpsy','onclick'=>'$(this).attr("disabled",true);','title' => $this->Uiconfig->getUiConfig("PORTAL_CALLHISTORY_EXPORT_BILLABLE_TITLE",""))
+			);
+		}
+	?>
+
+
+	</div>
+</div>
+<?php
+if ($this->Session->read('layout_type') == "navigation_user") {?>
+  <div class="callhistory-panel-main callhistory-user">
+<?php } else { ?>
+  <div class="callhistory-panel-main">
+<?php }
+	$jsRecLookup= array();
+	
+	
+	
+	
+	if (empty($cdrs)) {

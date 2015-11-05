@@ -26,6 +26,7 @@ namespace scastroOccurrence
 	private:
 		int tagLevel = 0;
 		int deltaTagLevel = 0;
+		bool inPHPTag = false;
 		StrRange range;
 	};
 
