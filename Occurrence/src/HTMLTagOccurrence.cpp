@@ -41,9 +41,28 @@ namespace scastroOccurrence
 		}
 	}
 
+
 	bool HTMLTagOccurrence::isFound()
 	{
-		for (int i = 0; i < line.size(); i++)
+		int lineSize = line.size();
+
+		//get rid of blank space in front of target data, return false is line is empty
+		if(inTargetRange)
+		{
+			for (int i = 0; i < lineSize; i++)
+			{
+				//std::cout << line[i] << std:: endl;
+				if(!isspace(line[i]))
+				{
+					range.beg = i;
+					break;
+				}
+				if (i == lineSize - 1)
+					return false;
+			}
+		}
+
+		for (int i = 0; i < lineSize; i++)
 		{
 			if (inPHPTag && (line[i] == '<' && line[i + 1] == '?'))
 			{
@@ -52,46 +71,64 @@ namespace scastroOccurrence
 				throw phpInPhp;
 			}
 			if (line[i] == '<' && line[i + 1] == '?')
+			{
+				std::cout << "test" << std::endl;
+				inAlert = false;
+				inTargetRange = false;
 				inPHPTag = true;
+			}
 			if (line[i] == '?' && line[i + 1] == '>')
 				inPHPTag = false;
 
-			if (deltaTagLevel == 1 && line[i] == '>')
+			//START HERE
+			if (line[i] == '<' && (line[i + 1] != '/' && line[i + 1] != '?'))
 			{
-				range.beg = i + 1;
+				inBegTag = true;
+				range.beg = -1;
+				inAlert = false;
 			}
-			if (line[i] == '<' && line[i + 1] != '/')//if beg tag (will also count inline tags)
+			if (inBegTag && line[i] == '>')
 			{
-				tagLevel += 1;
-				deltaTagLevel = 1;
-			}
-			if (line[i] == '/' && line[i + 1] == '>')// if inline tag
-			{
-				tagLevel -= 1;
-				if (tagLevel < 0)
-				{
-					std::string eMessage = "HTMLTagOccurrence::isFound() ERROR: Negative tag level at line: " + line;
-					std::runtime_error negTagLvl(eMessage);
-					throw negTagLvl;
-				}
-				deltaTagLevel = -1;
-			}
-			if (line[i] == '<' && line[i + 1] == '/' && deltaTagLevel == 1 )//if ending tag and relative maximum
-			{
-				tagLevel -= 1;
-				if (tagLevel < 0)
-				{
-					std::string eMessage = "HTMLTagOccurrence::isFound() ERROR: Negative tag level at line: " + line;
-					std::runtime_error negTagLvl(eMessage);
-					throw negTagLvl;
-				}
-				deltaTagLevel = -1;
-				range.end = i;
-				return true;
+				inBegTag = false;
+				inAlert = true;
+				//if the end of the tag is also the end of the line ex. <div>\n
+				if (i == lineSize - 1)
+					return false;
+				else
+					range.beg = i + 1;
 			}
 
+			//if in alert
+			if (inAlert && i >= range.beg)
+			{
+				std::cout << "bullshit" <<  std::endl;
+				if (line[i] != ' ')
+				{
+					range.beg = i;
+					inAlert = false;
+					inTargetRange= true;
+				}
+			}
+
+			if (inTargetRange)
+			{
+				if(line[i] == '<' && line[i + 1] == '/')
+				{
+					//std::cout << "test 1" <<  std::endl;
+					inTargetRange = false;
+					range.end = i;
+					return true;
+				}
+				if(i == lineSize - 1)
+				{
+
+					range.end = i + 1;
+					std::cout << "range.beg: " << range.beg <<  std::endl;
+					std::cout << "range.end: " << range.end <<  std::endl;
+					return true;
+				}
+			}
 		}
-		range.beg = -1;
 		return false;
 	}
 

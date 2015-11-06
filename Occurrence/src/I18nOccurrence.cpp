@@ -16,6 +16,10 @@ namespace scastroOccurrence
 
 	void I18nOccurrence::handle(std::string& data)
 	{
+		std:: string dataBeg = line.substr(0, range.beg);
+		std:: string dataEnd = line.substr(range.end);
+
+		data = dataBeg + "__" + dataEnd;
 	}
 
 	bool I18nOccurrence::isFound()
@@ -24,24 +28,8 @@ namespace scastroOccurrence
 		range.beg = line.find(occurrence);
 		if (range.beg != -1)
 		{
-			range.beg += occurrence.length();
-			int bracketLevel = 0;
-			for (int i = range.beg; i < line; i++)
-			{
-				if (line[i] == '(')
-					bracketLevel += 1;
-				if(line[i] == ')')
-					bracketLevel -= 1;
-				if (line[i] == ')' && bracketLevel == 0)
-				{
-					range.end = i;
-					return true;
-				}
-			}
-			std::string eMessage = "I18nOccurrence::isFound(): End bracket of i18n() function not found.";
-			std::runtime_error noEnd(eMessage);
-			throw noEnd;
-
+			range.end = range.beg + occurrence.length();
+			return true;
 		}
 		else
 			return false;

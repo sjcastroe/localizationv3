@@ -16,9 +16,13 @@
 #include <stdio.h>
 #include "../../Controller.h"
 #include "../../../../Model/src/LocalizationModel/src/LocalizationModel.h"
+
+//Occurrence includes
 #include "../../../../Occurrence/src/CakeHTMLTagOccurrence.h"
 #include "../../../../Occurrence/src/HTMLTagOccurrence.h"
+#include "../../../../Occurrence/src/I18nOccurrence.h"
 
+//View messages includes
 #include "../../../../Message/src/OccurrenceMessage.h"
 #include "../../../../Message/src/OccurrenceLineMessage.h"
 #include "../../../../Message/src/PromptMessage.h"

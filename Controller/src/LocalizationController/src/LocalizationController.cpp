@@ -160,6 +160,9 @@ void LocalizationController::setOccurrences()
 	std::tr1::shared_ptr<Occurrence> htmlTag(new HTMLTagOccurrence());
 	occurrences.push_back(htmlTag);
 
+	std::tr1::shared_ptr<Occurrence> i18nFunc(new I18nOccurrence());
+	occurrences.push_back(i18nFunc);
+
 	if (occurrences.size() == 0)
 	{
 		std::string eMessage = "No occurrences have been set.";

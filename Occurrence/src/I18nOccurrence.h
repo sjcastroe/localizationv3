@@ -11,6 +11,7 @@
 #include "Occurrence.h"
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 namespace scastroOccurrence
 {

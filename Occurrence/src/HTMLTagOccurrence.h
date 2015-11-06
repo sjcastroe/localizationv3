@@ -12,6 +12,7 @@
 #include "Occurrence.h"
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 namespace scastroOccurrence
 {
@@ -24,9 +25,12 @@ namespace scastroOccurrence
 		bool isFound();
 		void feed(std::string li);
 	private:
-		int tagLevel = 0;
-		int deltaTagLevel = 0;
+		//int tagLevel = 0;
+		//int deltaTagLevel = 0;
 		bool inPHPTag = false;
+		bool inBegTag = false;
+		bool inAlert = false;
+		bool inTargetRange = false;
 		StrRange range;
 	};
 
