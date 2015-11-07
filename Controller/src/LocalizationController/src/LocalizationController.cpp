@@ -57,7 +57,6 @@ void LocalizationController::run(int argc, char* argv[])
 		if (readFrom.eof())
 			break;
 
-
 		model->setIntData("linenumber", lineNumber);
 		model->setStringData("line", line);
 		model->run();
@@ -87,8 +86,9 @@ void LocalizationController::run(int argc, char* argv[])
 				{
 					occurrences[i]->handle(line);
 				}
-				catch (std::out_of_range& error)
+				catch (std::exception& error)
 				{
+
 					model->setStringData("line", lineOrig);
 
 					std::cout << "ERROR: Could not handle occurrence: " << error.what() << std::endl;
@@ -132,8 +132,8 @@ void LocalizationController::run(int argc, char* argv[])
 						else if (response == 'n')
 						{
 							validResponse = true;
-
-							model->setStringData("line", lineOrig);
+							line = lineOrig;
+							model->setStringData("line", line);
 						}
 						else
 							std::cout << "Invalid output. Please try again.";

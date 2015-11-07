@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 		delete controller;
 
 	}
-	catch(std::runtime_error& error)
+	catch(std::exception& error)
 	{
 		std::cout << error.what();
 		delete model;

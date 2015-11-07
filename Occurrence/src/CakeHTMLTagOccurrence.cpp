@@ -21,7 +21,7 @@ namespace scastroOccurrence
 		//std::cout << "LINE: " << line << std::endl;
 		int newLineOffset = line.length() - data.length();
 
-		StrRange argRange = findArg(line, occurrenceType, 2);
+		StrRange argRange = findArg(line, "$this->Html->tag", 2);
 
 		if (argRange.beg == -2)
 			inAlert = false;
@@ -58,7 +58,9 @@ namespace scastroOccurrence
 	bool CakeHTMLTagOccurrence::isFound()
 	{
 		if (line.find("$this->Html->tag") != -1)
+		{
 			return true;
+		}
 		else
 			return false;
 	}
