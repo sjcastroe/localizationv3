@@ -109,36 +109,43 @@ void LocalizationController::run(int argc, char* argv[])
 
 				if (shouldBeHandled)
 				{
-					view->display(new scastroView::OccurrenceMessage(model));
-
-					view->display(unhandledLine);
-
-					model->setStringData("line", line);
-
-					scastroView::Message* handledLine = new scastroView::OccurrenceLineMessage(model);
-					handledLine->setExternalData("label", "Handled Occurrence");
-
-					view->display(handledLine);
-					view->display(new scastroView::PromptMessage(model));
-
-
-					bool validResponse = false;
-					while (!validResponse)
+					if (occurrences[i]->getOccurrenceType() == "I18n Wrapper")
 					{
-						char response;
-						std::cin >> response;
-						if (response == 'y')
-							validResponse = true;
-						else if (response == 'n')
-						{
-							validResponse = true;
-							line = lineOrig;
-							model->setStringData("line", line);
-						}
-						else
-							std::cout << "Invalid output. Please try again.";
+						model->setStringData("line", line);
 					}
-					std::cout << std::endl;
+					else
+					{
+						view->display(new scastroView::OccurrenceMessage(model));
+
+						view->display(unhandledLine);
+
+						model->setStringData("line", line);
+
+						scastroView::Message* handledLine = new scastroView::OccurrenceLineMessage(model);
+						handledLine->setExternalData("label", "Handled Occurrence");
+
+						view->display(handledLine);
+						view->display(new scastroView::PromptMessage(model));
+
+
+						bool validResponse = false;
+						while (!validResponse)
+						{
+							char response;
+							std::cin >> response;
+							if (response == 'y')
+								validResponse = true;
+							else if (response == 'n')
+							{
+								validResponse = true;
+								line = lineOrig;
+								model->setStringData("line", line);
+							}
+							else
+								std::cout << "Invalid output. Please try again.";
+						}
+						std::cout << std::endl;
+					}
 				}
 			}
 		}

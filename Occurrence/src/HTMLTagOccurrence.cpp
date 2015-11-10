@@ -21,39 +21,60 @@ namespace scastroOccurrence
 
 	void HTMLTagOccurrence::handle(std::string& data)
 	{
-		this->findSubRange();
-
-		int rangeLength = subTargetRange.end - subTargetRange.beg;
-		//std::cout << rangeLength << std::endl;
-		if (rangeLength < 0)
+		do
 		{
-			std::string eMessage = "Invalid target range.";
-			std::runtime_error invTarRng(eMessage);
-			throw invTarRng;
-		}
-		else if (rangeLength > 0)
-		{
-			//std::cout << subTargetRange.beg << "   " << subTargetRange.end <<  std::endl;
-			std::string dataMid = data.substr(subTargetRange.beg, rangeLength);
+			this->feed(data);
+			this->findSubRange();
 
-			if (dataMid.find_first_not_of(' ') != std::string::npos)
+			int rangeLength = subTargetRange.end - subTargetRange.beg;
+			//std::cout << subTargetRange.beg << "   " << subTargetRange.end << std::endl;
+
+			if (rangeLength < 0)
 			{
-				std::string dataBeg = data.substr(0, subTargetRange.beg);
-				std::string dataEnd = data.substr(subTargetRange.end);
-
-				if (inPHPTag)
-					data = dataBeg + "__('" + dataMid + "', true)" + dataEnd;
-				else
-					data = dataBeg + "<?php __('" + dataMid + "')?>" + dataEnd;
+				std::string eMessage = "Invalid target range.";
+				std::runtime_error invTarRng(eMessage);
+				throw invTarRng;
 			}
-		}
-		subTargetRange.beg = -1;
-		subTargetRange.end = -1;
-	}
+			else if (rangeLength > 0)
+			{
+				//std::cout << subTargetRange.beg << "   " << subTargetRange.end <<  std::endl;
+				std::string dataMid = data.substr(subTargetRange.beg, rangeLength);
 
+				if (dataMid.find_first_not_of(' ') != std::string::npos)
+				{
+					std::string dataBeg = data.substr(0, subTargetRange.beg);
+					std::string dataEnd = data.substr(subTargetRange.end);
+
+					//std::cout << data[subTargetRange.end] << std::endl;
+
+					if (dataMid[0] == '"')
+					{
+						dataMid.erase(0, 1);
+						dataMid.erase(dataMid.size() - 1, 1);
+					}
+
+					dataMid = "'" + dataMid + "'";
+
+					if (inPHPTag)
+					{
+						range.end += 10;//size of strings added __(,true)
+						data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
+					}
+					else
+					{
+						range.end += 12;//size of added strings <?php __()?>
+						data = dataBeg + "<?php __(" + dataMid + ")?>" + dataEnd;
+					}
+				}
+			}
+			//subTargetRange.beg = -1;
+			//subTargetRange.end = -1;
+		} while (subTargetRange.beg != -1);
+	}
 
 	bool HTMLTagOccurrence::isFound()
 	{
+		//std::cout << line << std::endl;
 		int lineSize = line.size();
 
 		//get rid of blank space in front of target data, return false is line is empty
@@ -156,21 +177,31 @@ namespace scastroOccurrence
 		bool targetFound = false;
 		int newRangeBeg = -1;
 
+		//std::cout << range.beg << "    " << range.end << std::endl;
 		for(int i = range.beg; i < range.end; i++)
 		{
+			//Make sure parentheses are not in i18n function
 			if (line[i] == '\"' && !targetFound)
 			{
 				newRangeBeg = i;
 				targetFound = true;
 				i++;
 			}
+			//std::cout << line[i] << "  ";
 			if (line[i] == '\"' && targetFound)
 			{
 				subTargetRange.beg = newRangeBeg;
-				subTargetRange.end = i + 1;
-				break;
+				if (line[subTargetRange.beg - 3] != '8')//if range is argument of i18n function
+				{
+					subTargetRange.end = i + 1;
+					return;
+				}
+				targetFound = false;
 			}
 		}
+		subTargetRange.beg = -1;
+		subTargetRange.end = -1;
+
 	}
 
 

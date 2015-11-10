@@ -16,10 +16,20 @@ namespace scastroOccurrence
 
 	void I18nOccurrence::handle(std::string& data)
 	{
-		std:: string dataBeg = line.substr(0, range.beg);
-		std:: string dataEnd = line.substr(range.end);
+		std::string occurrence = "$this->I18n->i18n";
+		while(true)
+		{
+			this->feed(data);
+			range.beg = line.find(occurrence);
+			if (range.beg == -1)
+				break;
+			range.end = range.beg + occurrence.length();
 
-		data = dataBeg + "__" + dataEnd;
+			std:: string dataBeg = line.substr(0, range.beg);
+			std:: string dataEnd = line.substr(range.end);
+
+			data = dataBeg + "__" + dataEnd;
+		}
 	}
 
 	bool I18nOccurrence::isFound()
@@ -27,10 +37,7 @@ namespace scastroOccurrence
 		std::string occurrence = "$this->I18n->i18n";
 		range.beg = line.find(occurrence);
 		if (range.beg != -1)
-		{
-			range.end = range.beg + occurrence.length();
 			return true;
-		}
 		else
 			return false;
 	}
