@@ -10,6 +10,8 @@
 
 #include <fstream>
 #include <stdexcept>
+#include <cstdio>
+#include <cstdlib>
 #include <tr1/memory>
 #include <vector>
 #include <unistd.h>

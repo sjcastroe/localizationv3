@@ -156,6 +156,29 @@ void LocalizationController::run(int argc, char* argv[])
 	}
 
 	readFrom.close();
+
+	//change permissions and owner of copy file
+	std::string changeOwner = "chown --reference=" + fileName + " tmpFile";
+	std::string changePerm = "chmod --reference=" + fileName + " tmpFile";
+	system(changeOwner.c_str());
+	system(changePerm.c_str());
+
+	//delete original file
+	if (remove(fileName.c_str()) != 0)
+	{
+		std::string eMessage = "File " + fileName + " could not be deleted.";
+		std::runtime_error fileNotDeleted(eMessage);
+		throw fileNotDeleted;
+	}
+
+	//rename copy to original file name
+	if (rename("tmpFile", fileName.c_str()) != 0)
+	{
+		std::string eMessage = "File tmpFile could not be renamed.";
+		std::runtime_error renameFail(eMessage);
+		throw renameFail;
+	}
+
 	delete outputFile;
 }
 

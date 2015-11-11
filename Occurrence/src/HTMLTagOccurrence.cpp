@@ -111,13 +111,15 @@ namespace scastroOccurrence
 				inPHPTag = false;
 
 			//START HERE
-			if (line[i] == '<' && (line[i + 1] != '/' && line[i + 1] != '?'))
+			//find starting tag that is not a php tag '<?php' or a javascript tag '<script'
+			if (line[i] == '<' && line[i + 1] != '/' && line[i + 1] != '?' && line[i + 2] != 'c')
 			{
 				inBegTag = true;
 				range.beg = -1;
 				inAlert = false;
 			}
-			if (inBegTag && line[i] == '>')
+			//the '-' accounts for instances where '->' is used (otherwise '->' would be read as an ending tag)
+			if (inBegTag && line[i] == '>' && line[i - 1] != '-')
 			{
 				inBegTag = false;
 				inAlert = true;
@@ -147,6 +149,7 @@ namespace scastroOccurrence
 
 			if (inTargetRange)
 			{
+				//if we reach an ending tag
 				if(line[i] == '<' && line[i + 1] == '/')
 				{
 					//std::cout << "test 1" <<  std::endl;
@@ -154,6 +157,7 @@ namespace scastroOccurrence
 					range.end = i;
 					return true;
 				}
+				//if we reach the end of the line
 				if(i == lineSize - 1)
 				{
 
