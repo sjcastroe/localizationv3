@@ -54,9 +54,6 @@ void LocalizationController::run(int argc, char* argv[])
 		std::string line;
 		getline(readFrom, line);
 
-		if (readFrom.eof())
-			break;
-
 		model->setIntData("linenumber", lineNumber);
 		model->setStringData("line", line);
 		model->run();
@@ -153,6 +150,9 @@ void LocalizationController::run(int argc, char* argv[])
 		view->write(outputFile);
 
 		lineNumber = lineNumber + 1;
+
+		if (readFrom.eof())
+			break;
 	}
 
 	readFrom.close();

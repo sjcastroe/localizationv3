@@ -26,50 +26,54 @@ namespace scastroOccurrence
 			this->feed(data);
 			this->findSubRange();
 
-			int rangeLength = subTargetRange.end - subTargetRange.beg;
-			//std::cout << subTargetRange.beg << "   " << subTargetRange.end << std::endl;
-
-			if (rangeLength < 0)
+			//if we're in a <script> tag, and a sub range does not exist DO NOT handle (otherwise we'd handle all JS code in the tag)
+			if(!(inScriptTag && !subRangeExists))
 			{
-				std::string eMessage = "Invalid target range.";
-				std::runtime_error invTarRng(eMessage);
-				throw invTarRng;
-			}
-			else if (rangeLength > 0)
-			{
-				//std::cout << subTargetRange.beg << "   " << subTargetRange.end <<  std::endl;
-				std::string dataMid = data.substr(subTargetRange.beg, rangeLength);
+				int rangeLength = subTargetRange.end - subTargetRange.beg;
+				//std::cout << subTargetRange.beg << "   " << subTargetRange.end << std::endl;
 
-				if (dataMid.find_first_not_of(' ') != std::string::npos)
+				if (rangeLength < 0)
 				{
-					std::string dataBeg = data.substr(0, subTargetRange.beg);
-					std::string dataEnd = data.substr(subTargetRange.end);
+					std::string eMessage = "Invalid target range.";
+					std::runtime_error invTarRng(eMessage);
+					throw invTarRng;
+				}
+				else if (rangeLength > 0)
+				{
+					//std::cout << subTargetRange.beg << "   " << subTargetRange.end <<  std::endl;
+					std::string dataMid = data.substr(subTargetRange.beg, rangeLength);
 
-					//std::cout << data[subTargetRange.end] << std::endl;
-
-					if (dataMid[0] == '"')
+					if (dataMid.find_first_not_of(' ') != std::string::npos)
 					{
-						dataMid.erase(0, 1);
-						dataMid.erase(dataMid.size() - 1, 1);
-					}
+						std::string dataBeg = data.substr(0, subTargetRange.beg);
+						std::string dataEnd = data.substr(subTargetRange.end);
 
-					dataMid = "'" + dataMid + "'";
+						//std::cout << data[subTargetRange.end] << std::endl;
 
-					if (inPHPTag)
-					{
-						range.end += 10;//size of strings added __(,true)
-						data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
-					}
-					else
-					{
-						range.end += 12;//size of added strings <?php __()?>
-						data = dataBeg + "<?php __(" + dataMid + ")?>" + dataEnd;
+						if (dataMid[0] == '"')
+						{
+							dataMid.erase(0, 1);
+							dataMid.erase(dataMid.size() - 1, 1);
+						}
+
+						dataMid = "'" + dataMid + "'";
+
+						if (inPHPTag)
+						{
+							range.end += 10;//size of strings added __(,true)
+							data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
+						}
+						else
+						{
+							range.end += 12;//size of added strings <?php __()?>
+							data = dataBeg + "<?php __(" + dataMid + ")?>" + dataEnd;
+						}
 					}
 				}
+				//subTargetRange.beg = -1;
+				//subTargetRange.end = -1;
 			}
-			//subTargetRange.beg = -1;
-			//subTargetRange.end = -1;
-		} while (subTargetRange.beg != -1);
+		} while (subRangeExists);
 	}
 
 	bool HTMLTagOccurrence::isFound()
@@ -83,7 +87,8 @@ namespace scastroOccurrence
 			for (int i = 0; i < lineSize; i++)
 			{
 				//std::cout << line[i] << std:: endl;
-				if(!isspace(line[i]))
+				//if(!(isspace(line[i]) || line[i] == '\t'))
+				if (!isblank(line[i]))
 				{
 					range.beg = i;
 					break;
@@ -110,10 +115,22 @@ namespace scastroOccurrence
 			if (line[i] == '?' && line[i + 1] == '>')
 				inPHPTag = false;
 
+			if (line[i] == '<' && line[i + 1] == 's' && line[i + 2] == 'c')
+			{
+				std::cout << "JS tag found" << std::endl;
+				inScriptTag = true;
+			}
+
+			if (line[i] == '<' && line[i + 1] == '/' && line[i + 2] == 's' && line[i + 3] == 'c')
+				inScriptTag = false;
+
 			//START HERE
 			//find starting tag that is not a php tag '<?php' or a javascript tag '<script'
-			if (line[i] == '<' && line[i + 1] != '/' && line[i + 1] != '?' && line[i + 2] != 'c')
+			if (line[i] == '<' && line[i + 1] != '/' && line[i + 1] != '-' && line[i + 1] != '?')
 			{
+				//checks if tag is being echoed or if its a real html tag
+				if (line[i - 1] == '\"')
+					echoedTag = true;
 				inBegTag = true;
 				range.beg = -1;
 				inAlert = false;
@@ -129,10 +146,11 @@ namespace scastroOccurrence
 				else
 				{
 					//accounts for tags being echoed vs real html tags (echoes tags will be in parentheses)
-					if (line[i + 1] == '\"')
+					if (line[i + 1] == '\"' && echoedTag)
 						range.beg = i + 2;
 					else
 						range.beg = i + 1;
+					echoedTag = false;
 				}
 			}
 
@@ -144,6 +162,7 @@ namespace scastroOccurrence
 					range.beg = i;
 					inAlert = false;
 					inTargetRange= true;
+					std::cout << "in target zone" << std::endl;
 				}
 			}
 
@@ -185,26 +204,28 @@ namespace scastroOccurrence
 		for(int i = range.beg; i < range.end; i++)
 		{
 			//Make sure parentheses are not in i18n function
-			if (line[i] == '\"' && !targetFound)
+			if (line[i] == '\"' && !targetFound && line[i - 2] != '$')
 			{
 				newRangeBeg = i;
 				targetFound = true;
 				i++;
 			}
 			//std::cout << line[i] << "  ";
-			if (line[i] == '\"' && targetFound)
+			if (line[i] == '\"' && targetFound && line[i + 2] != '.')
 			{
 				subTargetRange.beg = newRangeBeg;
 				if (line[subTargetRange.beg - 3] != '8')//if range is argument of i18n function
 				{
+					subRangeExists = true;
 					subTargetRange.end = i + 1;
 					return;
 				}
 				targetFound = false;
 			}
 		}
-		subTargetRange.beg = -1;
-		subTargetRange.end = -1;
+		subRangeExists = false;
+		subTargetRange.beg = range.beg;
+		subTargetRange.end = range.end;
 
 	}
 

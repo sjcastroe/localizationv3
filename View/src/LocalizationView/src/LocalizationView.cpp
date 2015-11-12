@@ -21,5 +21,3 @@ void LocalizationView::write(std::ofstream* file)
 }
 
 }
-
-

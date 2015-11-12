@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <tr1/memory>
 #include <iostream>
+#include <cctype>
 
 namespace scastroOccurrence
 {
@@ -28,10 +29,13 @@ namespace scastroOccurrence
 	private:
 		void findSubRange();
 		StrRange subTargetRange;
+		bool echoedTag = false;
+		bool inScriptTag = false;
 		bool inPHPTag = false;
 		bool inBegTag = false;
 		bool inAlert = false;
 		bool inTargetRange = false;
+		bool subRangeExists = true;
 		StrRange range;
 	};
 
