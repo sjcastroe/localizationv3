@@ -59,26 +59,25 @@ namespace scastroOccurrence
 						dataMid = "'" + dataMid + "'";
 
 						if (inPHPTag)
-						{
-							range.end += 10;//size of strings added __(,true)
-							data = dataBeg + "__(" + dataMid + ", true)" + dataEnd;
-						}
+							data = dataBeg + "' . __(" + dataMid + ", true) . '" + dataEnd;
+						else if (inScriptTag && !inPHPTag)
+							data = dataBeg + "<?php __(" + dataMid + ", true)?>" + dataEnd;
 						else
 						{
-							range.end += 12;//size of added strings <?php __()?>
+							//range.end += 12;//size of added strings <?php __()?>
 							data = dataBeg + "<?php __(" + dataMid + ")?>" + dataEnd;
 						}
+						range.beg = data.length() - dataEnd.length();
+						int lengthNoWrap = dataBeg.length() + dataMid.length() + dataEnd.length();
+						range.end += (data.length() - lengthNoWrap);
 					}
 				}
-				//subTargetRange.beg = -1;
-				//subTargetRange.end = -1;
 			}
 		} while (subRangeExists);
 	}
 
 	bool HTMLTagOccurrence::isFound()
 	{
-		//std::cout << line << std::endl;
 		int lineSize = line.size();
 
 		//get rid of blank space in front of target data, return false is line is empty
@@ -87,7 +86,6 @@ namespace scastroOccurrence
 			for (int i = 0; i < lineSize; i++)
 			{
 				//std::cout << line[i] << std:: endl;
-				//if(!(isspace(line[i]) || line[i] == '\t'))
 				if (!isblank(line[i]))
 				{
 					range.beg = i;
@@ -117,7 +115,7 @@ namespace scastroOccurrence
 
 			if (line[i] == '<' && line[i + 1] == 's' && line[i + 2] == 'c')
 			{
-				std::cout << "JS tag found" << std::endl;
+				//std::cout << "JS tag found" << std::endl;
 				inScriptTag = true;
 			}
 
@@ -162,7 +160,6 @@ namespace scastroOccurrence
 					range.beg = i;
 					inAlert = false;
 					inTargetRange= true;
-					std::cout << "in target zone" << std::endl;
 				}
 			}
 
@@ -179,10 +176,7 @@ namespace scastroOccurrence
 				//if we reach the end of the line
 				if(i == lineSize - 1)
 				{
-
 					range.end = i + 1;
-					//std::cout << "range.beg: " << range.beg <<  std::endl;
-					//std::cout << "range.end: " << range.end <<  std::endl;
 					return true;
 				}
 			}
@@ -200,18 +194,19 @@ namespace scastroOccurrence
 		bool targetFound = false;
 		int newRangeBeg = -1;
 
+		//std::cout << "Range String: " << line.substr(range.beg, range.end - range.beg) << std::endl;
 		//std::cout << range.beg << "    " << range.end << std::endl;
 		for(int i = range.beg; i < range.end; i++)
 		{
 			//Make sure parentheses are not in i18n function
-			if (line[i] == '\"' && !targetFound && line[i - 2] != '$')
+			if (line[i] == '\"' && !targetFound) //&& line[i - 2] != '$')
 			{
 				newRangeBeg = i;
 				targetFound = true;
 				i++;
 			}
 			//std::cout << line[i] << "  ";
-			if (line[i] == '\"' && targetFound && line[i + 2] != '.')
+			if (line[i] == '\"' && targetFound)// && line[i + 2] != '.')
 			{
 				subTargetRange.beg = newRangeBeg;
 				if (line[subTargetRange.beg - 3] != '8')//if range is argument of i18n function

@@ -34,7 +34,7 @@ namespace scastroOccurrence
 
 	bool I18nOccurrence::isFound()
 	{
-		std::string occurrence = "$this->I18n->i18n";
+		std::string occurrence = "$this->I18n->i18n(";
 		range.beg = line.find(occurrence);
 		if (range.beg != -1)
 			return true;

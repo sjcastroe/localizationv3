@@ -23,6 +23,7 @@
 #include "../../../../Occurrence/src/CakeHTMLTagOccurrence.h"
 #include "../../../../Occurrence/src/HTMLTagOccurrence.h"
 #include "../../../../Occurrence/src/I18nOccurrence.h"
+#include "../../../../Occurrence/src/ScriptTagOccurrence.h"
 
 //View messages includes
 #include "../../../../Message/src/OccurrenceMessage.h"

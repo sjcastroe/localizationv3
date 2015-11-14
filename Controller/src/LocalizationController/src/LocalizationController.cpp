@@ -190,8 +190,11 @@ void LocalizationController::setOccurrences()
 	std::tr1::shared_ptr<Occurrence> htmlTag(new HTMLTagOccurrence());
 	occurrences.push_back(htmlTag);
 
-	std::tr1::shared_ptr<Occurrence> i18nFunc(new I18nOccurrence());
-	occurrences.push_back(i18nFunc);
+	//std::tr1::shared_ptr<Occurrence> i18nFunc(new I18nOccurrence());
+	//occurrences.push_back(i18nFunc);
+
+	std::tr1::shared_ptr<Occurrence> scriptTag(new ScriptTagOccurrence());
+	occurrences.push_back(scriptTag);
 
 	if (occurrences.size() == 0)
 	{
