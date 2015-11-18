@@ -23,6 +23,8 @@ public:
 	virtual std::string getStringData(std::string dataName);
 	virtual void setIntData(std::string dataName, int data);
 	virtual int getIntData(std::string dataName);
+	virtual void setSavedLine(int data) = 0;//BAD, GET RID OF ASAP
+	virtual int getSavedLine(int index) = 0;//BAD, GET RID OF ASAP
 	virtual ~Model() {}
 protected:
 	std::map<std::string, std::string> stringData;

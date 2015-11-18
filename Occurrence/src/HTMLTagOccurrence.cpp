@@ -61,11 +61,11 @@ namespace scastroOccurrence
 						if (inPHPTag)
 							data = dataBeg + "' . __(" + dataMid + ", true) . '" + dataEnd;
 						else if (inScriptTag && !inPHPTag)
-							data = dataBeg + "<?php __(" + dataMid + ", true)?>" + dataEnd;
+							data = dataBeg + "\"<?php __(" + dataMid + ");?>\"" + dataEnd;
 						else
 						{
 							//range.end += 12;//size of added strings <?php __()?>
-							data = dataBeg + "<?php __(" + dataMid + ")?>" + dataEnd;
+							data = dataBeg + "<?php __(" + dataMid + ");?>" + dataEnd;
 						}
 						range.beg = data.length() - dataEnd.length();
 						int lengthNoWrap = dataBeg.length() + dataMid.length() + dataEnd.length();

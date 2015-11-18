@@ -51,7 +51,7 @@ namespace scastroOccurrence
 
 						dataMid = "'" + dataMid + "'";
 
-						data = dataBeg + "<?php __(" + dataMid + ", true)?>" + dataEnd;
+						data = dataBeg + "\"<?php __(" + dataMid + ");?>\"" + dataEnd;
 
 						range.beg = data.length() - dataEnd.length();
 						int lengthNoWrap = dataBeg.length() + dataMid.length() + dataEnd.length();

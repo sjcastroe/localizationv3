@@ -130,13 +130,20 @@ void LocalizationController::run(int argc, char* argv[])
 						{
 							char response;
 							std::cin >> response;
-							if (response == 'y')
+							if (response == 'y')//handle
 								validResponse = true;
-							else if (response == 'n')
+							else if (response == 'n')//don't handle
 							{
 								validResponse = true;
 								line = lineOrig;
 								model->setStringData("line", line);
+							}
+							else if (response == 's')
+							{
+								validResponse = true;
+								line = lineOrig;
+								model->setStringData("line", line);
+								model->setSavedLine(lineNumber);
 							}
 							else
 								std::cout << "Invalid output. Please try again.";
@@ -156,6 +163,9 @@ void LocalizationController::run(int argc, char* argv[])
 	}
 
 	readFrom.close();
+
+	scastroView::Message* savedLines = new scastroView::SavedLinesMessage(model);
+	view->display(savedLines);
 
 	//change permissions and owner of copy file
 	std::string changeOwner = "chown --reference=" + fileName + " tmpFile";

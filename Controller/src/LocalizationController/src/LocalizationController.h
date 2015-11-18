@@ -30,6 +30,7 @@
 #include "../../../../Message/src/OccurrenceLineMessage.h"
 #include "../../../../Message/src/PromptMessage.h"
 #include "../../../../Message/src/RepromptMessage.h"
+#include "../../../../Message/src/SavedLinesMessage.h"
 
 using namespace scastroOccurrence;
 

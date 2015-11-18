@@ -11,7 +11,7 @@ namespace scastroView
 {
 void PromptMessage::output()
 {
-	std::cout << "Would you like to handle the occurrence? (y/n)";
+	std::cout << "Would you like to handle the occurrence? Yes(y) No(n) Save(s) => ";
 }
 
 }

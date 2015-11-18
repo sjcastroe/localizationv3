@@ -32,7 +32,19 @@ namespace scastroModel
 			std::runtime_error wrongArg(eMessage);
 			throw wrongArg;
 		}
+	}
 
+	void LocalizationModel::setSavedLine(int data)
+	{
+		savedLines.push_back(data);
+	}
+
+	int LocalizationModel::getSavedLine(int index)
+	{
+		if (index < savedLines.size() && index >= 0)
+			return savedLines[index];
+		else
+			return -1;
 	}
 }
 

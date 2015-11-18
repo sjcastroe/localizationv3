@@ -10,6 +10,7 @@
 
 #include "../../Model.h"
 #include <stdexcept>
+#include <vector>
 #include <iostream>
 
 namespace scastroModel
@@ -18,6 +19,11 @@ class LocalizationModel : public Model
 {
 public:
 	void run();
+	int getSavedLine(int index);
+	void setSavedLine(int data);
+private:
+
+	std::vector<int> savedLines;
 };
 
 }
